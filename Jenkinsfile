@@ -72,7 +72,7 @@ pipeline {
         }
 
         stage('Build App Image'){
-            step {
+            steps {
                 script {
                     //Run Docker build command
                     //Dockerfile should be in same dir in source code
@@ -82,7 +82,7 @@ pipeline {
         }
 
         stage('Upload Image'){
-                    step {
+                    steps {
                         script {
                             docker.withRegistry('', registryCredential) { //pass registryCredential defined in environment to this function
                                 dockerImage.push("V$BUILD_NUMBER") //dockerImage var defined at line 79
@@ -93,14 +93,14 @@ pipeline {
                 }
 
         stage('Remove Unused Docker Images'){ //remove the images on Jenkins as everytime run the job it create new image
-                    step {
+                    steps {
                         sh "docker rmi $registry:V$BUILD_NUMBER" //registry is var in environment
                     }
                 }
 
         stage('Kubernetes Deploy'){
         agent {label 'KOPS'} //run form agent with label 'KOPS'
-                            step {
+                            steps {
                                 sh "helm upgrade --install --force vprofile-stack helm/vprofilecharts --set appimage=${registry}:V${BUILD_NUMBER} --namespace prod"
                             }
                         }
