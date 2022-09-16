@@ -92,7 +92,7 @@ pipeline {
                     }
                 }
 
-        stage('Remove Unused Docker Images'){ //remove the images on Jenkins as everytime run the job it create new image
+        stage('Remove Unused Docker Images'){ //remove the images on Jenkins after pushed to dockerhub, as everytime run the job it create new image
                     steps {
                         sh "docker rmi $registry:V$BUILD_NUMBER" //registry is var in environment
                     }
